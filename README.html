@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Li Bizarre Adventure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8; /* Warm Sand */
+            color: #4A4A4A;
+        }
+        .nav-btn {
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        .nav-btn.active {
+            border-bottom-color: #3B82F6; /* Accent Blue */
+            color: #1E40AF;
+        }
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+        .activity-card {
+            transition: all 0.3s ease;
+            border-left: 5px solid transparent;
+        }
+        /* Removed specific highlight classes as they are no longer needed with only 'all' filter */
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Li Bizarre Adventure</h1>
+            <p class="text-lg text-gray-600 mt-2">8月22日 - 8月29日</p>
+            <p class="mt-1 text-sm text-gray-500">酒店：REF Okinawa Arena by Vessel Hotels</p>
+            <p class="mt-1 text-sm text-gray-500">每日活動至晚上9:30。餐費每人每餐控制在 HKD $100 以下（約¥1900）。</p>
+        </header>
+
+        <section id="filters" class="mb-8 p-4 bg-white rounded-xl shadow-sm">
+            <h2 class="text-lg font-bold text-center mb-4 text-gray-700">篩選活動</h2>
+            <div class="flex flex-wrap justify-center gap-2 md:gap-4">
+                <button onclick="applyFilter('all')" class="filter-btn px-4 py-2 text-sm font-medium rounded-full bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">所有活動</button>
+            </div>
+        </section>
+
+        <nav class="mb-8 border-b border-gray-200">
+            <div class="flex flex-wrap justify-center -mb-px">
+                <button onclick="showTab('overview')" class="nav-btn text-lg font-medium p-4">概覽與小貼士</button>
+                <button onclick="showTab(0)" class="nav-btn text-lg font-medium p-4">第1天</button>
+                <button onclick="showTab(1)" class="nav-btn text-lg font-medium p-4">第2天</button>
+                <button onclick="showTab(2)" class="nav-btn text-lg font-medium p-4">第3天</button>
+                <button onclick="showTab(3)" class="nav-btn text-lg font-medium p-4">第4天</button>
+                <button onclick="showTab(4)" class="nav-btn text-lg font-medium p-4">第5天</button>
+                <button onclick="showTab(5)" class="nav-btn text-lg font-medium p-4">第6天</button>
+                <button onclick="showTab(6)" class="nav-btn text-lg font-medium p-4">第7天</button>
+                <button onclick="showTab(7)" class="nav-btn text-lg font-medium p-4">第8天</button>
+            </div>
+        </nav>
+
+        <main id="content-area">
+        </main>
+    </div>
+
+<script>
+function createMapLink(displayText, searchQuery) {
+    const encodedQuery = encodeURIComponent(searchQuery);
+    return `<a href="https://www.google.com/maps/search/?api=1&query=${encodedQuery}" target="_blank" class="text-blue-600 hover:underline">${displayText} 📍</a>`;
+}
+
+const itineraryData = [
+    {
+        day: "第1天：8月22日 (星期五)",
+        title: "抵達、購物與機場接送",
+        events: [
+            { time: "11:00", desc: `BL 和 GE 抵達${createMapLink('那霸機場 (OKA)', 'Naha Airport Okinawa')}，取車，前往 <strong>${createMapLink('Ashibinaa Outlet', 'Ashibinaa Outlet Okinawa')}</strong>。`, tags: ['girl', 'boy', 'food'] },
+            { time: "中午", desc: `前往 <strong>${createMapLink('iias 沖繩豐崎', 'iias Okinawa Toyosaki')}</strong> 📍。推薦餐廳：<strong>${createMapLink('OK STEAK HAMBURG', 'OK STEAK HAMBURG Okinawa')}</strong>。`, tags: ['art', 'food'] },
+            { time: "下午", desc: `探索 <strong>${createMapLink('2nd Street', '2nd Street Naha Okinawa')}</strong> 尋找二手書籍，並前往 <strong>${createMapLink('セカンドストリート赤嶺店', 'Second Street Akamine Okinawa')}</strong> 購買二手服裝。`, tags: ['food', 'boy', 'girl'] },
+            { time: "傍晚", desc: `晚餐：在 <strong>${createMapLink('夢丸豐崎店', '夢丸豐崎店 Okinawa')}</strong> 用餐 (預計 ¥1500-2500 / HKD $80-$130)。`, tags: ['food'] },
+            { time: "21:00", desc: `GE 駕車前往${createMapLink('那霸機場', 'Naha Airport Okinawa')}接載 JL 和 IL。`, tags: [] },
+            { time: "晚間", desc: `入住 ${createMapLink('REF Okinawa Arena by Vessel Hotels', 'REF Okinawa Arena by Vessel Hotels')}。`, tags: [] }
+        ]
+    },
+    {
+        day: "第2天：8月23日 (星期六)",
+        title: "自然、文化與玻璃工藝",
+        events: [
+            { time: "上午", desc: `探索 <strong>${createMapLink('沖繩世界', 'Okinawa World')}</strong>，包括壯麗的 <strong>${createMapLink('玉泉洞', 'Gyokusendo Cave Okinawa World')}</strong>，並沉浸在琉球文化中。`, tags: ['art', 'girl', 'boy'] },
+            { time: "午餐", desc: "在沖繩世界園區內享用簡餐 (預算 ¥900-1200 / HKD $50-$65)。", tags: ['food'] },
+            { time: "下午", desc: `參觀 <strong>${createMapLink('琉球玻璃村', 'Ryukyu Glass Village Okinawa')}</strong> 體驗獨特的<strong>玻璃吹製工藝</strong>。這是 JY 參與獨特藝術創作的絕佳機會。`, tags: ['art', 'girl'] },
+            { time: "晚餐", desc: `在 <strong>${createMapLink('夢丸豐崎店', '夢丸豐崎店 Okinawa')}</strong> 用餐 (預計 ¥1500-2500 / HKD $80-$130)。`, tags: ['food'] }
+        ]
+    },
+    {
+        day: "第3天：8月24日 (星期日)",
+        title: "恩納村探險與美國村",
+        events: [
+            { time: "06:30", desc: `出發至 <strong>${createMapLink('恩納村', 'Onna Village Okinawa')}</strong>。`, tags: [] },
+            { time: "08:00", desc: `在 <strong>${createMapLink('真榮田岬 青之洞窟', 'Blue Cave Okinawa')}</strong> 體驗浮潛。由 <strong>${createMapLink('マリンクラブUMI (Marine Club UMI)', 'Marine Club UMI Okinawa')}</strong> 提供服務。`, tags: ['girl'] },
+            { time: "11:00", desc: `參觀 <strong>${createMapLink('萬座毛', 'Cape Manza Okinawa')}</strong>。`, tags: ['art', 'girl'] },
+            { time: "午餐", desc: `在 <strong>${createMapLink('なかむらそば 恩納村店', 'Nakamura Soba Onna Village')}</strong> 享用午餐 (預計 ¥800-1200 / HKD $45-$65)。`, tags: ['food'] },
+            { time: "15:00", desc: `BL 和 JY 在 <strong>${createMapLink('1F American Village Gourmet Hall 15-67 Mihama Chatan Town (American Village) 理髮店', '1F American Village Gourmet Hall 15-67 Mihama Chatan Town (American Village) Hair Salon')}</strong> 進行理髮。`, tags: ['girl', 'art'] },
+            { time: "下午", desc: `探索 <strong>${createMapLink('美國村', 'Mihama American Village Okinawa')}</strong>。`, tags: ['art', 'food', 'girl', 'boy'] },
+            { time: "晚餐", desc: `在 <strong>${createMapLink('塔可飯咖啡 Kijimuna グルメ迴轉壽司市場', 'Taco Rice Cafe Kijimuna Gourmet Kaiten Sushi Sushi Market')}</strong> 用餐 (預計 ¥1500-2500 / HKD $80-$130)。`, tags: ['food'] }
+        ]
+    },
+    {
+        day: "第4天：8月25日 (星期一)",
+        title: "樹頂索道與ATV越野車",
+        events: [
+            { time: "早餐", desc: "在便利店享用早餐 (約 ¥400 / HKD $20)。", tags: ['food'] },
+            { time: "09:00-11:30", desc: `在 <strong>${createMapLink('Forest Adventure Park Okinawa 樹頂索道', 'Forest Adventure Park Okinawa')}</strong> 體驗樹頂索道冒險。`, tags: ['girl'] },
+            { time: "12:00-13:00", desc: `午餐 (預算 ¥900-1200 / HKD $50-$65)。推薦餐廳：<strong>${createMapLink('八重食堂沖繩麵', '〒905-0013 沖縄県名護市城１丁目９−3')}</strong>。`, tags: ['food'] },
+            { time: "13:00-15:00", desc: "自由活動或放鬆，或前往超市補給。", tags: [] },
+            { time: "15:00-16:30", desc: `<strong>${createMapLink('ATV 越野車體驗', '2665 Izumi, Motobu, Kunigami District, Okinawa 905-0221, Japan')}</strong>。`, tags: ['girl', 'boy'] },
+            { time: "晚餐", desc: `晚餐推薦：<strong>${createMapLink('くら寿司 名護店', 'Kura Sushi Nago')}</strong> (預計 ¥1500-2500 / HKD $80-$130)。`, tags: ['food'] }
+        ]
+    },
+    {
+        day: "第5天：8月26日 (星期二)",
+        title: "購物與美食體驗",
+        events: [
+            { time: "上午 (09:30-12:00)", desc: `前往 <strong>${createMapLink('San-A 浦添西海岸PARCO', 'San-A Urasoe Nishikaigan PARCO Okinawa')}</strong> (必逛 : UNIQLO、無印良品、屋頂摩天輪)。備案：若想避開人潮，可改至 <strong>${createMapLink('BookOff Gushikawa', 'BookOff Gushikawa Okinawa')}</strong> (車程15分鐘)。`, tags: ['food', 'girl', 'boy'] },
+            { time: "午餐", desc: `在 <strong>${createMapLink('Nakazaya 沖繩麵', 'Nakazaya Okinawa Soba Okinawa')}</strong> 用餐 (預計 ¥800-1200 / HKD $45-$65)。`, tags: ['food'] },
+            { time: "下午", desc: `前往 <strong>${createMapLink('Okinawa Outlet Mall Ashibinaa / 瀨長島', 'Okinawa Outlet Mall Ashibinaa Senagajima')}</strong> 購物。`, tags: ['food', 'girl', 'boy'] },
+            { time: "晚餐", desc: `在 <strong>${createMapLink('夢丸豐崎店', '夢丸豐崎店 Okinawa')}</strong> 用餐 (預計 ¥1500-2500 / HKD $80-$130)。`, tags: ['food'] }
+        ]
+    },
+    {
+        day: "第6天：8月27日 (星期三)",
+        title: "自由活動與潛水體驗",
+        events: [
+            { time: "上午", desc: `11:00 <strong>${createMapLink('港川外人住宅', 'Minatogawa Stateside Town Okinawa')}</strong> (文創拍照、咖啡廳休憩)。`, tags: ['art', 'food', 'girl'] },
+            { time: "下午", desc: `14:30-17:00 BL 和 IL 參加恩納村 <strong>${createMapLink('「清潛」潛水體驗', 'Onna Village Scuba Diving Okinawa')}</strong> (恩納村，車程1小時)。`, tags: ['girl', 'boy'] },
+            { time: "同時段", desc: `GE 和 JL 可選擇：同行前往恩納村，或在潛水店附近咖啡廳等待。推薦：<strong>${createMapLink('沖繩恩納駅 農夫市場和餐廳 The Bros. Sandwich Stand', 'Okinawa Onna Station Farmers Market and Restaurant The Bros. Sandwich Stand')}</strong>。`, tags: ['art', 'food'] },
+            { time: "晚上", desc: `18:30-20:00 晚餐 : <strong>${createMapLink('Hamanoya Restaurant', 'Hamanoya Restaurant Okinawa')}</strong>。`, tags: ['food'] },
+            { time: "晚間", desc: `20:30-22:00 <strong>${createMapLink('Round1 Stadium 壺川店', 'Round1 Stadium Tsubogawa Okinawa')}</strong>。`, tags: ['boy', 'girl'] }
+        ]
+    },
+    {
+        day: "第7天：8月28日 (星期四)",
+        title: "文化探索與水族館",
+        events: [
+            { time: "11:30-13:00", desc: `在 <strong>${createMapLink('漁師食堂 大ばんぶる舞', 'Ryoshi Shokudo Obanburu Mai Okinawa')}</strong> 用餐 (預計 ¥1500-3000 / HKD $80-$160)。`, tags: ['food'] },
+            { time: "13:30-17:00", desc: `參觀 <strong>${createMapLink('沖繩美麗海水族館', 'Okinawa Churaumi Aquarium')}</strong> (停留更久)。`, tags: ['art', 'girl', 'boy'] },
+            { time: "17:00-18:00", desc: `前往 <strong>${createMapLink('名護市役所 展望台', 'Nago City Hall Observatory')}</strong>，欣賞日落。`, tags: ['art'] },
+            { time: "18:00-19:30", desc: `晚餐 : 名護市「<strong>${createMapLink('Yukino', 'Yukino Nago Okinawa')}</strong>」 (預計 ¥1500-2500 / HKD $80-$130)。`, tags: ['food'] }
+        ]
+    },
+    {
+        day: "第8天：8月29日 (星期五)",
+        title: "樂園與燒肉日",
+        events: [
+            { time: "早餐", desc: "在便利店享用早餐 (約 ¥400 / HKD $20)。", tags: ['food'] },
+            { time: "上午 (10:00-14:00)", desc: `前往 <strong>${createMapLink('JUNGIA主題冒險樂園', 'JUNGIA Theme Park Okinawa')}</strong> (需自備門票)。`, tags: ['girl', 'boy', 'art'] },
+            { time: "午餐", desc: "在樂園內享用輕食 (預算 ¥1000-1500 / HKD $50-$80)。", tags: ['food'] },
+            { time: "晚餐", desc: `<strong>${createMapLink('燒肉乃我那霸 (炭火燒肉 吃到飽)', '沖縄県名護市宮里1410-1 2Ｆ')}</strong> (約 ¥3480 / HKD $180)。`, tags: ['food'] },
+            { time: "夜間", desc: "返回酒店，準備搭機。", tags: [] }
+        ]
+    }
+];
+
+const overviewContent = `
+    <div class="bg-white p-6 rounded-xl shadow-lg animate-fade-in">
+        <div class="grid grid-cols-1 gap-8">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">行程介紹</h2>
+                <p class="text-gray-700 leading-relaxed mb-6">這個互動式行程表旨在提供一個結合放鬆、文化沉浸、風景優美和根據每位家庭成員喜好量身定制的活動。在沖繩，租賃汽車是探索的最佳方式，強烈建議租車以獲得靈活性和便利性。使用上方的選項卡按天瀏覽，並使用篩選器突出顯示符合您興趣的活動！</p>
+
+                <h3 class="text-xl font-bold text-gray-800 mb-4">重要小貼士</h3>
+                <ul class="space-y-3 text-gray-600">
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">🚗</span> <strong>交通：：</strong>強烈建議租賃汽車。確保您持有國際駕駛許可證 (IDP)。</li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">☀️</span> <strong>天氣：：</strong>八月沖繩炎熱潮濕，可能會有颱風。請保持水分充足，穿著輕便，並使用防曬霜。</li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">🎟️</span> <strong>預訂：：</strong>對於熱門景點，考慮提前在線預訂門票以節省時間。</li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">📍</span> <strong>地圖連結：：</strong>行程中的許多地點都包含Google地圖連結 (標有📍)，點擊即可在新分頁中查看位置。</li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">🤸</span> <strong>靈活性：：</strong>這是一個建議行程。請根據您家庭的精力水平和每天的喜好自由調整。</li>
+                     <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">🛍️</span> <strong>二手購物：：</strong>對於特定商店，建議在旅行日期臨近時進行快速在線搜索，以獲取最新信息。</li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">⏰</span> <strong>活動時間：：：</strong>每日活動建議至晚上9:30結束。</li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">💰</span> <strong>餐飲預算：：</strong>每人每餐建議控制在 HKD $100 以下（約¥1900）。行程中已包含預估餐飲費用。</li>
+                    <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">✅</span> <strong>已包含項目：：</strong>行程中已包括預約活動、文化體驗與娛樂設施的費用。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+`;
+
+
+const contentArea = document.getElementById('content-area');
+const navButtons = document.querySelectorAll('.nav-btn');
+let currentFilter = 'all';
+
+function renderDay(dayIndex) {
+    const dayData = itineraryData[dayIndex];
+    let html = `
+        <div class="bg-white p-6 rounded-xl shadow-lg animate-fade-in">
+            <header class="text-center mb-6 pb-4 border-b">
+                <h2 class="text-3xl font-bold text-gray-800">${dayData.day}</h2>
+                <p class="text-xl text-gray-600">${dayData.title}</p>
+            </header>
+            <div class="space-y-6">
+    `;
+
+    dayData.events.forEach(event => {
+        const tagsString = event.tags.join(' ');
+        html += `
+            <div class="activity-card p-4 rounded-lg bg-gray-50 border-l-4 border-gray-200" data-tags="${tagsString}">
+                <h4 class="font-bold text-lg text-gray-700">${event.time}</h4>
+                <p class="text-gray-600 mt-1">${event.desc}</p>
+            </div>
+        `;
+    });
+
+    html += `</div></div>`;
+    contentArea.innerHTML = html;
+    applyFilter(currentFilter, false);
+}
+
+function renderOverview() {
+    contentArea.innerHTML = overviewContent;
+    // No chart to create anymore
+}
+
+
+function showTab(tabId) {
+    if (tabId === 'overview') {
+        renderOverview();
+    } else {
+        renderDay(tabId);
+    }
+    
+    navButtons.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick') === `showTab('${tabId}')` || btn.getAttribute('onclick') === `showTab(${tabId})`) {
+            btn.classList.add('active');
+        }
+    });
+}
+
+function applyFilter(filter, userAction = true) {
+    if(userAction) currentFilter = filter;
+    
+    const activityCards = document.querySelectorAll('.activity-card');
+    // No specific highlight classes needed anymore, just ensure they revert to default
+    activityCards.forEach(card => {
+        card.className = 'activity-card p-4 rounded-lg bg-gray-50 border-l-4 border-gray-200';
+    });
+}
+
+// Removed the createChart function as it's no longer needed.
+
+document.addEventListener('DOMContentLoaded', () => {
+    showTab('overview');
+});
+
+</script>
+</body>
+</html>
+\</immersive\>

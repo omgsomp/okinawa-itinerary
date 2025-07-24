@@ -1,3 +1,4 @@
+%%html
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -6,7 +7,7 @@
     <title>Li Bizarre Adventure</title>
     <!-- Chosen Palette: Warm Sand & Seafoam -->
     <!-- Application Structure Plan: The application is designed as an interactive daily planner. The core structure features a main navigation bar with buttons for each day (Day 1-8) and an "Overview & Tips" section. The key interaction is a set of filters corresponding to each family member's interests (e.g., "Art & Crafts," "Local Food & Vintage," "Anime & Outdoors," "Manga & JoJo"). When a day is selected, its itinerary is displayed. When an interest filter is activated, relevant activities on the page are highlighted with a distinct color. This structure was chosen to move beyond a static, linear document, allowing each family member to easily see activities tailored to them, making the dense information more manageable and personalized. A summary chart provides a quick visual breakdown of the trip's focus areas. This user-centric design prioritizes easy exploration and personal relevance over a rigid, purely chronological presentation. -->
-    <!-- Visualization & Content Choices: 
+    <!-- Visualization & Content Choices:
         Report Info: 8-day itinerary with activities for 4 family members. -> Goal: Organize, Compare, Inform. -> Viz/Presentation: Interactive daily tabs and filter buttons. Activities are presented in cards with icons. -> Interaction: Clicking day tabs updates the main content view. Clicking interest filters applies a visual highlight (CSS class change via JS) to relevant activity cards. -> Justification: This transforms a passive text document into a dynamic tool. Filters allow for personalized views, enhancing usability for a family with diverse interests. The card layout improves readability.
         Report Info: Types of activities (culture, food, shopping, nature). -> Goal: Inform (Summary). -> Viz/Presentation: Bar Chart (Chart.js/Canvas). -> Interaction: Static display. -> Justification: The chart provides an at-a- glance summary of the trip's balance, offering a "big picture" view that isn't immediately obvious from the text alone.
         All diagrams and layouts are built using structured HTML and Tailwind CSS.
@@ -87,9 +88,8 @@ const itineraryData = [
         title: "抵達、購物與機場接送",
         events: [
             { time: "11:00", desc: `BL 和 GE 抵達${createMapLink('那霸機場 (OKA)', 'Naha Airport Okinawa')}，取車，前往 <strong>${createMapLink('Ashibinaa Outlet', 'Ashibinaa Outlet Okinawa')}</strong>。`, tags: ['girl', 'boy', 'food'] },
-            { time: "中午", desc: `前往 <strong>${createMapLink('iias 沖繩豐崎', 'iias Okinawa Toyosaki')}</strong> 📍。推薦餐廳：<strong>${createMapLink('OK STEAK HAMBURG', 'OK STEAK HAMBURG Okinawa')}</strong>。`, tags: ['art', 'food'] },
+            { time: "中午", desc: `前往 <strong>${createMapLink('iias 沖繩豐崎', 'iias Okinawa Toyosaki')}</strong>。推薦餐廳：<strong>${createMapLink('OK STEAK HAMBURG', 'OK STEAK HAMBURG Okinawa')}</strong>。`, tags: ['art', 'food'] },
             { time: "下午", desc: `探索 <strong>${createMapLink('2nd Street', '2nd Street Naha Okinawa')}</strong> 尋找二手書籍，並前往 <strong>${createMapLink('セカンドストリート赤嶺店', 'Second Street Akamine Okinawa')}</strong> 購買二手服裝。`, tags: ['food', 'boy', 'girl'] },
-            { time: "傍晚", desc: `晚餐：在 <strong>${createMapLink('夢丸豐崎店', '夢丸豐崎店 Okinawa')}</strong> 用餐 (預計 ¥1500-2500 / HKD $80-$130)。`, tags: ['food'] },
             { time: "21:00", desc: `GE 駕車前往${createMapLink('那霸機場', 'Naha Airport Okinawa')}接載 JL 和 IL。`, tags: [] },
             { time: "晚間", desc: `入住 ${createMapLink('REF Okinawa Arena by Vessel Hotels', 'REF Okinawa Arena by Vessel Hotels')}。`, tags: [] }
         ]
@@ -240,7 +240,7 @@ function showTab(tabId) {
     } else {
         renderDay(tabId);
     }
-    
+
     navButtons.forEach(btn => {
         btn.classList.remove('active');
         if (btn.getAttribute('onclick') === `showTab('${tabId}')` || btn.getAttribute('onclick') === `showTab(${tabId})`) {
@@ -251,7 +251,7 @@ function showTab(tabId) {
 
 function applyFilter(filter, userAction = true) {
     if(userAction) currentFilter = filter;
-    
+
     const activityCards = document.querySelectorAll('.activity-card');
     // No specific highlight classes needed anymore, just ensure they revert to default
     activityCards.forEach(card => {
